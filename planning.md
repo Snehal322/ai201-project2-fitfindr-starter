@@ -111,6 +111,7 @@ For each tool, describe the specific failure mode you're handling and what the a
 
 ---
 
+
 ## AI Tool Plan
 
 <!-- For each part of the implementation below, describe:
@@ -136,14 +137,74 @@ Write out what a full user interaction looks like from start to finish — tool 
 
 **Example user query:** "I'm looking for a vintage graphic tee under $30. I mostly wear baggy jeans and chunky sneakers. What's out there and how would I style it?"
 
+ FitFindr helps users discover secondhand clothing items, style them with pieces from their existing wardrobe, and generate shareable outfit content. The agent first searches available listings, then suggests an outfit using the selected item and the user's wardrobe, and finally creates a fit card suitable for social media. If no matching listing is found, the workflow stops and the user receives guidance on how to modify their search instead of proceeding with invalid data.
+
 **Step 1:**
 <!-- What does the agent do first? Which tool is called? With what input? -->
+-- > The agent first calls search_listings() to find clothing items that match the user's request.
+     tool called : search_listings()
+     input : description="vintage graphic tee",
+               size="M",
+               max_price=30.0
 
 **Step 2:**
 <!-- What happens next? What was returned from step 1? What tool is called now? -->
+-->
+     The planning loop stores this item in session state as:
+
+          state["selected_item"]
+
+     output of step 1:
+          {
+               "id": 102,
+               "title": "Faded Band Tee",
+               "description": "Vintage-inspired oversized band graphic tee",
+               "size": "M",
+               "price": 22.00,
+               "condition": "Good",
+               "platform": "Depop",
+               "style_tags": ["grunge", "vintage", "streetwear"]
+          }
+
+     The agent now calls tool suggest_outfit().
+     The selected listing from Step 1 is passed along with the user's wardrobe.
+     The wardrobe is loaded using:
+          get_example_wardrobe()
+
+     The tool analyzes colors, style tags, and clothing categories already present in the wardrobe.
+     
+     Output ex. : Pair the vintage band tee with your wide-leg jeans and platform Doc Martens for a classic 90s grunge look. Roll the sleeves once and loosely front-tuck the shirt for extra shape.
+
+     The outfit suggestion is stored in:
+          state["outfit"]
 
 **Step 3:**
 <!-- Continue until the full interaction is complete -->
 
+--> The agent now generates social-media-ready styling text by calling create_fit_card().
+
+     Tool Call:
+     create_fit_card(
+     outfit=outfit_suggestion
+     )
+
+     output : thrifted this faded band tee off depop for $22 and honestly it was made for my wide-legs 🖤full look in my stories
+
+     stores res in state["fit_card"]
+
+
 **Final output to user:**
 <!-- What does the user actually see at the end? -->
+
+-->     
+     Best Match:
+     Faded Band Tee — $22 (Depop)
+
+     Suggested Outfit:
+     Pair the vintage band tee with your wide-leg jeans and platform Doc Martens for a classic 90s grunge look. Roll the sleeves once and loosely front-tuck the shirt for extra shape.
+
+     Fit Card:
+     "thrifted this faded band tee off depop for $22 and honestly it was made for my wide-legs 🖤 full look in my stories"
+
+     Source:
+     Depop listing #102
