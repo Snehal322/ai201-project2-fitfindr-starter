@@ -219,7 +219,101 @@ For each tool, describe the specific failure mode you're handling and what the a
 
 **Milestone 3 — Individual tool implementations:**
 
+Tool 1: search_listings
+
+Which AI tool you plan to use 
+Claude 
+
+What you'll give it as input (which sections of this planning.md, your agent diagram)
+The Tool 1 specification from the Tools section
+The Error Handling table entry for search_listings
+The Architecture diagram
+Information about load_listings() from utils/data_loader.py
+
+What I expect the AI to produce:
+A Python implementation of search_listings()
+Filtering by description keywords
+Filtering by size
+Filtering by maximum price
+Relevance-based sorting of results
+Empty-result handling
+
+How I'll verify it:
+Confirm the code uses load_listings()
+Confirm all three filters are applied
+Test with at least three queries
+Verify empty searches return an empty list instead of crashing
+
+
+Tool 2: suggest_outfit
+
+AI tool : Claude
+
+What I'll provide as input:
+The Tool 2 specification
+Wardrobe schema information
+Description of get_example_wardrobe()
+Description of get_empty_wardrobe()
+Error handling requirements
+
+What I expect the AI to produce:
+A Python function that accepts a selected listing and wardrobe
+Logic that matches style tags, colors, and categories
+Personalized outfit recommendations
+Fallback logic for empty wardrobes
+
+How I'll verify it:
+Test using get_example_wardrobe()
+Test using get_empty_wardrobe()
+Confirm recommendations reference wardrobe items when available
+Confirm generic styling advice is returned when wardrobe is empty
+
+
+Tool 3: create_fit_card
+
+AI Tool: Claude
+
+What I'll provide as input:
+The Tool 3 specification
+Example fit card outputs
+Error handling requirements
+
+What I expect the AI to produce:
+A function that converts outfit suggestions into short social-media captions
+Natural language output suitable for Instagram, TikTok, or Depop
+
+How I'll verify it:
+Confirm captions include the selected item
+Confirm captions remain short and readable
+Test behavior when outfit information is missing
+
+
 **Milestone 4 — Planning loop and state management:**
+
+
+AI Tool: Claude
+
+What I'll provide as input:
+Planning Loop section
+State Management section
+Architecture diagram
+Error Handling table
+
+
+What I expect the AI to produce:
+An agent controller function
+Session-state management
+Sequential tool orchestration
+Early-return logic for failures
+
+
+How I'll verify it:
+Confirm search_listings runs first
+Confirm selected_item is stored in state
+Confirm suggest_outfit receives selected_item
+Confirm create_fit_card receives outfit_suggestion
+Confirm the workflow stops when no listings are found
+Confirm the final response contains all generated outputs
 
 ---
 
